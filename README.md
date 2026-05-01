@@ -23,7 +23,7 @@ source install/setup.bash
 
 From the workspace root:
 ```bash
-ros2 run cpp_test talker
+ros2 run pubsub_demo talker
 ```
 
 ## 🏗️ structure
