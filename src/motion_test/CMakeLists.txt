@@ -22,8 +22,13 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(talker
+add_executable(test
   src/main.cpp
+  src/test.cpp
+)
+
+target_include_directories(test PUBLIC
+  include
 )
 
 ament_target_dependencies(talker
