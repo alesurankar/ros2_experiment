@@ -7,7 +7,7 @@ class TalkerNode : public rclcpp::Node
 public:
   TalkerNode();
 private:
-  void TimerCallback();
+  void timerCallback();
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;

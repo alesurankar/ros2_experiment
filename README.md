@@ -1,4 +1,3 @@
-
 # ROS2 Lab
 
 This repository contains a collection of ROS2 C++ experiments.
@@ -8,6 +7,21 @@ It is used to explore:
 - motion control experiments
 - sensor processing tests
 
+---
+
+## Environment Setup
+
+Before using ROS2 commands in a new terminal, you must source the environment:
+
+```bash
+# ROS2 system
+source /opt/ros/humble/setup.bash
+
+# Your workspace
+source ~/ros2_ws/install/setup.bash
+```
+
+---
 
 ## Build Instructions
 
@@ -25,6 +39,8 @@ From the workspace root:
 ```bash
 ros2 run pubsub_demo talker
 ```
+
+---
 
 ## 🏗️ structure
 
@@ -47,6 +63,8 @@ ros2_ws/
  │         ├── package.xml
  │         ├── src/
 ```
+
+---
 
 ## Environment
 

@@ -14,7 +14,7 @@ TalkerNode::TalkerNode()
   );
 }
 
-void TalkerNode::TimerCallback()
+void TalkerNode::timerCallback()
 {
   std_msgs::msg::String msg;
   msg.data = "Hello ROS2: " + std::to_string(counter_++);
