@@ -1,7 +1,12 @@
-## Overview
 
-This is a simple ROS2 C++ package that demonstrates a basic publisher node.
-It publishes string messages at a fixed interval using ROS2 topics.
+# ROS2 Lab
+
+This repository contains a collection of ROS2 C++ experiments.
+
+It is used to explore:
+- ROS2 publisher/subscriber communication
+- motion control experiments
+- sensor processing tests
 
 
 ## Build Instructions
@@ -20,6 +25,25 @@ From the workspace root:
 ```bash
 ros2 run cpp_test talker
 ```
+
+## 🏗️ structure
+ros2_ws/
+ ├── src/
+ │    ├── pubsub_demo/
+ │    │    ├── CMakeLists.txt
+ │    │    ├── package.xml
+ │    │    ├── src/
+ │    │    └── include/
+ │    │
+ │    ├── sensor_playground/
+ │    │    ├── CMakeLists.txt
+ │    │    ├── package.xml
+ │    │    ├── src/
+ │    │
+ │    ├── motion_test/
+ │         ├── CMakeLists.txt
+ │         ├── package.xml
+ │         ├── src/
 
 
 ## Environment
