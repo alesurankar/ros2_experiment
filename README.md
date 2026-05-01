@@ -27,6 +27,8 @@ ros2 run pubsub_demo talker
 ```
 
 ## 🏗️ structure
+
+```text
 ros2_ws/
  ├── src/
  │    ├── pubsub_demo/
@@ -44,7 +46,7 @@ ros2_ws/
  │         ├── CMakeLists.txt
  │         ├── package.xml
  │         ├── src/
-
+```
 
 ## Environment
 
