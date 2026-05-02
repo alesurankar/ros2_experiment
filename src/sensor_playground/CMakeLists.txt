@@ -22,17 +22,17 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(talker
+add_executable(sensor_node
   src/main.cpp
 )
 
-ament_target_dependencies(talker
+ament_target_dependencies(sensor_node
   rclcpp
   std_msgs
 )
 
 install(TARGETS
-  talker
+  sensor_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
