@@ -1,7 +1,8 @@
 #include "motion_test/test.hpp"
 
 Test::Test()
-  : Node("test_node")
+  : 
+  Node("test_node")
 {
   subscription_ = this->create_subscription<std_msgs::msg::String>(
     "chatter",

@@ -10,7 +10,9 @@ ProcessingNode::ProcessingNode()
   subscription_ = this->create_subscription<std_msgs::msg::String>(
     "chatter",
     10,
-    std::bind(&ProcessingNode::callback, this, std::placeholders::_1)
+    [this](const std_msgs::msg::String::SharedPtr msg) {
+      this->callback(msg);
+    }
   );
 
   publisher_ = this->create_publisher<std_msgs::msg::String>(
@@ -22,7 +24,6 @@ ProcessingNode::ProcessingNode()
 void ProcessingNode::callback(const std_msgs::msg::String::SharedPtr msg)
 {
   std_msgs::msg::String out;
-
   out.data = "Processed: " + msg->data;
 
   RCLCPP_INFO(this->get_logger(), "Received: '%s'", msg->data.c_str());
