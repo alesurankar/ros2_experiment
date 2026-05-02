@@ -1,4 +1,6 @@
-#include "pubsub_demo/talker.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "pubsub_demo/talker_node.hpp"
+#include <memory>
 
 int main(int argc, char **argv)
 {

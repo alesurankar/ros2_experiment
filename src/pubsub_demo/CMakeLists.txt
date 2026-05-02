@@ -22,9 +22,10 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# TALKER NODE
 add_executable(talker_node
-  src/main.cpp
-  src/talker.cpp
+  src/main_talker.cpp
+  src/talker_node.cpp
 )
 
 target_include_directories(talker_node PUBLIC
@@ -36,8 +37,25 @@ ament_target_dependencies(talker_node
   std_msgs
 )
 
+# LISTENER NODE
+add_executable(listener_node
+  src/main_listener.cpp
+  src/listener_node.cpp
+)
+
+target_include_directories(listener_node PUBLIC
+  include
+)
+
+ament_target_dependencies(listener_node
+  rclcpp
+  std_msgs
+)
+
+# INSTALL NODES
 install(TARGETS
   talker_node
+  listener_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

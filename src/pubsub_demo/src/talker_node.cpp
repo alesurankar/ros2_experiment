@@ -1,4 +1,5 @@
-#include "pubsub_demo/talker.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "pubsub_demo/talker_node.hpp"
 
 using namespace std::chrono_literals;
 

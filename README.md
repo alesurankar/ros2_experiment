@@ -37,7 +37,7 @@ source install/setup.bash
 
 From the workspace root:
 ```bash
-ros2 run pubsub_demo talker
+ros2 run <project_name> <node_executable>
 ```
 
 ---
