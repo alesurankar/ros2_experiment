@@ -8,9 +8,11 @@ ListenerNode::ListenerNode()
   Node("listener_node")
 {
   subscription_ = this->create_subscription<std_msgs::msg::String>(
-    "chatter",
+    "processed_chatter",
     10,
-    std::bind(&ListenerNode::topicCallback, this, std::placeholders::_1)
+    [this](const auto msg) {
+      this->topicCallback(msg);
+    }
   );
 }
 
