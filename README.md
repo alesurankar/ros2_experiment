@@ -79,3 +79,13 @@ export TURTLEBOT3_MODEL=burger
 killall gzserver gzclient 2>/dev/null || true
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ```
+
+## Spawn Robot
+```bash
+ros2 run gazebo_ros spawn_entity.py \
+  -entity burger \
+  -file /opt/ros/humble/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf \
+  -x -2.0 \
+  -y -0.5 \
+  -z 0.0
+```

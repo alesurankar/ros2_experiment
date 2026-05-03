@@ -1,12 +1,14 @@
 #include "rclcpp/rclcpp.hpp"
-#include "motion_test/test.hpp"
+#include "motion_test/motion_filter.hpp"
 #include <memory>
 
 
 int main(int argc, char **argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<MotionTest>());
+  auto node = std::make_shared<MotionFilter>();
+  rclcpp::spin(node);
   rclcpp::shutdown();
+
   return 0;
 }

@@ -1,11 +1,11 @@
-#include "motion_test/test.hpp"
+#include "motion_test/motion_filter.hpp"
 
 
 using namespace std::chrono_literals;
 
-MotionTest::MotionTest()
+MotionFilter::MotionFilter()
   : 
-  Node("motion_test_node")
+  Node("motion_commander_node")
 {
   publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
     "/cmd_vel", 10
@@ -13,13 +13,18 @@ MotionTest::MotionTest()
 
   timer_ = this->create_wall_timer(
     500ms,
-    [this]() {
-      this->timerCallback();
-    }
+    [this]() { this->timerCallback(); }
   );
+
+  watchdogTimer_ = this->create_wall_timer(
+    100ms,
+    [this]() { this->watchdogCallback(); }
+  );
+
+  lastCmdTime_ = this->now();
 }
 
-MotionTest::~MotionTest()
+void MotionFilter::stopRobot()
 {
   geometry_msgs::msg::Twist stop;
 
@@ -27,11 +32,10 @@ MotionTest::~MotionTest()
   stop.angular.z = 0.0;
 
   publisher_->publish(stop);
-
   RCLCPP_INFO(this->get_logger(), "STOP sent on shutdown");
 }
 
-void MotionTest::timerCallback()
+void MotionFilter::timerCallback()
  {
     geometry_msgs::msg::Twist msg;
 
@@ -39,6 +43,13 @@ void MotionTest::timerCallback()
     msg.angular.z = 0.01;
 
     publisher_->publish(msg);
-
+    lastCmdTime_ = this->now();
     RCLCPP_INFO(this->get_logger(), "Moving forward...");
   }
+
+void MotionFilter::watchdogCallback()
+{
+  if ((this->now() - lastCmdTime_).seconds() > 0.5) {
+    stopRobot();
+  }
+}

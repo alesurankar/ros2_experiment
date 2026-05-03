@@ -3,11 +3,10 @@
 #include "geometry_msgs/msg/twist.hpp"
 
 
-class MotionTest : public rclcpp::Node
+class MotionCommander : public rclcpp::Node
 {
 public:
-  MotionTest();
-  ~MotionTest();
+  MotionCommander();
 private:
   void timerCallback();
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;

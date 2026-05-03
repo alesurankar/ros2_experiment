@@ -8,11 +8,10 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  find_package(geometry_msgs REQUIRED)
   # the following line skips the linter which checks for copyrights
   # comment the line when a copyright and license is added to all source files
   set(ament_cmake_copyright_FOUND TRUE)
@@ -23,23 +22,38 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(test_node
-  src/main.cpp
-  src/test.cpp
+# motion commander node
+add_executable(motion_commander_node
+  src/motion_commander_node.cpp
+  src/motion_commander.cpp
 )
 
-target_include_directories(test_node PUBLIC
+target_include_directories(motion_commander_node PUBLIC
   include
 )
 
-ament_target_dependencies(test_node
+ament_target_dependencies(motion_commander_node
   rclcpp
-  std_msgs
+)
+
+# motion filter node
+add_executable(motion_filter_node
+  src/motion_filter_node.cpp
+  src/motion_filter.cpp
+)
+
+target_include_directories(motion_filter_node PUBLIC
+  include
+)
+
+ament_target_dependencies(motion_filter_node
+  rclcpp
   geometry_msgs
 )
 
 install(TARGETS
-  test_node
+  motion_commander_node
+  motion_filter_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
