@@ -7,6 +7,7 @@ class MotionTest : public rclcpp::Node
 {
 public:
   MotionTest();
+  ~MotionTest();
 private:
   void timerCallback();
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;

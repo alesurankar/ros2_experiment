@@ -19,12 +19,24 @@ MotionTest::MotionTest()
   );
 }
 
+MotionTest::~MotionTest()
+{
+  geometry_msgs::msg::Twist stop;
+
+  stop.linear.x = 0.0;
+  stop.angular.z = 0.0;
+
+  publisher_->publish(stop);
+
+  RCLCPP_INFO(this->get_logger(), "STOP sent on shutdown");
+}
+
 void MotionTest::timerCallback()
  {
     geometry_msgs::msg::Twist msg;
 
-    msg.linear.x = 0.2;   // forward speed
-    msg.angular.z = 0.0;  // no rotation
+    msg.linear.x = 0.2;
+    msg.angular.z = 0.01;
 
     publisher_->publish(msg);
 
