@@ -1,19 +1,32 @@
 #include "motion_test/test.hpp"
 
-Test::Test()
+
+using namespace std::chrono_literals;
+
+MotionTest::MotionTest()
   : 
-  Node("test_node")
+  Node("motion_test_node")
 {
-  subscription_ = this->create_subscription<std_msgs::msg::String>(
-    "chatter",
-    10,
-    [this](const std_msgs::msg::String::SharedPtr msg) {
-      this->subscriberCallback(msg);
+  publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
+    "/cmd_vel", 10
+  );
+
+  timer_ = this->create_wall_timer(
+    500ms,
+    [this]() {
+      this->timerCallback();
     }
   );
 }
 
-void Test::subscriberCallback(const std_msgs::msg::String::SharedPtr msg)
-{
-  RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
-}
+void MotionTest::timerCallback()
+ {
+    geometry_msgs::msg::Twist msg;
+
+    msg.linear.x = 0.2;   // forward speed
+    msg.angular.z = 0.0;  // no rotation
+
+    publisher_->publish(msg);
+
+    RCLCPP_INFO(this->get_logger(), "Moving forward...");
+  }

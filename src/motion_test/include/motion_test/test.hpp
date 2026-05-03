@@ -1,12 +1,14 @@
 #pragma once
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 
-class Test : public rclcpp::Node
+
+class MotionTest : public rclcpp::Node
 {
 public:
-  Test();
+  MotionTest();
 private:
-  void subscriberCallback(const std_msgs::msg::String::SharedPtr msg);
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
+  void timerCallback();
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+  rclcpp::TimerBase::SharedPtr timer_;
 };

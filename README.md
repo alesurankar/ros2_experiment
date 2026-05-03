@@ -70,3 +70,12 @@ ros2_ws/
 
 - OS: Ubuntu 22.04 (WSL2 on Windows 11)
 - ROS2: Humble
+
+
+## Run Gazebo
+```bash
+source /opt/ros/humble/setup.bash
+export TURTLEBOT3_MODEL=burger
+killall gzserver gzclient 2>/dev/null || true
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+```

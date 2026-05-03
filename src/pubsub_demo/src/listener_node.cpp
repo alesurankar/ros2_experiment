@@ -10,7 +10,8 @@ ListenerNode::ListenerNode()
   subscription_ = this->create_subscription<std_msgs::msg::String>(
     "processed_chatter",
     10,
-    [this](const auto msg) {
+    [this](const std_msgs::msg::String::SharedPtr msg)
+    {
       this->topicCallback(msg);
     }
   );

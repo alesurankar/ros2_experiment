@@ -28,6 +28,5 @@ void ProcessingNode::callback(const std_msgs::msg::String::SharedPtr msg)
 
   RCLCPP_INFO(this->get_logger(), "Received: '%s'", msg->data.c_str());
   RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", out.data.c_str());
-
   publisher_->publish(out);
 }
