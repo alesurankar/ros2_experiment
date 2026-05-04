@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -21,6 +22,10 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MotionCommand.msg"
+)
 
 # motion commander node
 add_executable(motion_commander_node
@@ -35,6 +40,9 @@ target_include_directories(motion_commander_node PUBLIC
 ament_target_dependencies(motion_commander_node
   rclcpp
 )
+
+rosidl_target_interfaces(motion_commander_node
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 # motion filter node
 add_executable(motion_filter_node
@@ -51,10 +59,15 @@ ament_target_dependencies(motion_filter_node
   geometry_msgs
 )
 
+rosidl_target_interfaces(motion_filter_node
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 install(TARGETS
   motion_commander_node
   motion_filter_node
   DESTINATION lib/${PROJECT_NAME}
 )
+
+ament_export_dependencies(rosidl_default_runtime)
 
 ament_package()

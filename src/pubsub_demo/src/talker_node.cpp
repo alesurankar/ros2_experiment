@@ -5,7 +5,8 @@ using namespace std::chrono_literals;
 
 TalkerNode::TalkerNode()
   : 
-  Node("talker_node"), counter_(0)
+  Node("talker_node"), 
+  counter_(0)
 {
   publisher_ = this->create_publisher<std_msgs::msg::String>("chatter", 10);
 

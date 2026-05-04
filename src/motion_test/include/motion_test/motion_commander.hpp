@@ -1,6 +1,6 @@
 #pragma once
 #include "rclcpp/rclcpp.hpp"
-#include "geometry_msgs/msg/twist.hpp"
+#include "motion_test/msg/motion_command.hpp"
 
 
 class MotionCommander : public rclcpp::Node

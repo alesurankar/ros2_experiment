@@ -1,4 +1,5 @@
 #include "motion_test/motion_filter.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 
 
 using namespace std::chrono_literals;
@@ -35,17 +36,22 @@ void MotionFilter::stopRobot()
   RCLCPP_INFO(this->get_logger(), "STOP sent on shutdown");
 }
 
+void MotionFilter::topicCallback(/*MotionCommand.msg*/)
+{
+  // TODO
+}
+
 void MotionFilter::timerCallback()
- {
-    geometry_msgs::msg::Twist msg;
+{
+  geometry_msgs::msg::Twist msg;
 
-    msg.linear.x = 0.2;
-    msg.angular.z = 0.01;
+  msg.linear.x = 0.2;
+  msg.angular.z = 0.01;
 
-    publisher_->publish(msg);
-    lastCmdTime_ = this->now();
-    RCLCPP_INFO(this->get_logger(), "Moving forward...");
-  }
+  publisher_->publish(msg);
+  lastCmdTime_ = this->now();
+  RCLCPP_INFO(this->get_logger(), "Moving forward...");
+}
 
 void MotionFilter::watchdogCallback()
 {
