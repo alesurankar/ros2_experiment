@@ -9,6 +9,8 @@ public:
   MotionCommander();
 private:
   void timerCallback();
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+  rclcpp::Publisher<motion_test::msg::MotionCommand>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
+  double linear_x_;
+  double angular_z_;
 };

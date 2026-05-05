@@ -1,5 +1,4 @@
 #include "motion_test/motion_filter.hpp"
-#include "geometry_msgs/msg/twist.hpp"
 
 
 using namespace std::chrono_literals;
@@ -10,6 +9,15 @@ MotionFilter::MotionFilter()
 {
   publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
     "/cmd_vel", 10
+  );
+
+  subscription_ = this->create_subscription<motion_test::msg::MotionCommand>(
+    "motion_command",
+    10,
+    [this](const motion_test::msg::MotionCommand::SharedPtr msg)
+    {
+      this->topicCallback(*msg);
+    }
   );
 
   timer_ = this->create_wall_timer(
@@ -36,7 +44,7 @@ void MotionFilter::stopRobot()
   RCLCPP_INFO(this->get_logger(), "STOP sent on shutdown");
 }
 
-void MotionFilter::topicCallback(/*MotionCommand.msg*/)
+void MotionFilter::topicCallback(motion_test::msg::MotionCommand)
 {
   // TODO
 }

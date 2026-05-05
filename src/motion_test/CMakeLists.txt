@@ -27,6 +27,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MotionCommand.msg"
 )
 
+rosidl_get_typesupport_target(cpp_typesupport_target
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 # motion commander node
 add_executable(motion_commander_node
   src/motion_commander_node.cpp
@@ -40,9 +43,6 @@ target_include_directories(motion_commander_node PUBLIC
 ament_target_dependencies(motion_commander_node
   rclcpp
 )
-
-rosidl_target_interfaces(motion_commander_node
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 # motion filter node
 add_executable(motion_filter_node
@@ -59,8 +59,13 @@ ament_target_dependencies(motion_filter_node
   geometry_msgs
 )
 
-rosidl_target_interfaces(motion_filter_node
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(motion_commander_node
+  ${cpp_typesupport_target}
+)
+
+target_link_libraries(motion_filter_node
+  ${cpp_typesupport_target}
+)
 
 install(TARGETS
   motion_commander_node
