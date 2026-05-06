@@ -8,14 +8,14 @@ class MotionFilter : public rclcpp::Node
 {
 public:
   MotionFilter();
-  void stopRobot();
+  //void stopRobot();
 private:
-  void topicCallback(motion_test::msg::MotionCommand);
-  void timerCallback();
-  void watchdogCallback();
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+  void topicCallback(const motion_test::msg::MotionCommand& msg);
+  //void timerCallback();
+  //void watchdogCallback();
+  //rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
   rclcpp::Subscription<motion_test::msg::MotionCommand>::SharedPtr subscription_;
-  rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::TimerBase::SharedPtr watchdogTimer_;
-  rclcpp::Time lastCmdTime_;
+  //rclcpp::TimerBase::SharedPtr timer_;
+  //rclcpp::TimerBase::SharedPtr watchdogTimer_;
+  //rclcpp::Time lastCmdTime_;
 };

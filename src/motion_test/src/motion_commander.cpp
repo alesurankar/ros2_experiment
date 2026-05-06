@@ -31,9 +31,9 @@ void MotionCommander::timerCallback()
   msg.angular_z = angular_z_;
 
   // Logging ///
-  // RCLCPP_INFO(this->get_logger(),
-  //   "Publishing: linear_x=%.2f angular_z=%.2f",
-  //   msg.linear_x, msg.angular_z);
+  RCLCPP_INFO(this->get_logger(),
+    "Publishing: linear_x=%.2f angular_z=%.2f",
+    msg.linear_x, msg.angular_z);
   //////////////
 
   publisher_->publish(msg);
