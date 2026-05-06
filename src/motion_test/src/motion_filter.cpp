@@ -7,11 +7,11 @@ MotionFilter::MotionFilter()
   : 
   Node("motion_filter_node")
 {
-  // publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
-  //   "/cmd_vel", 10
-  // );
+  publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
+    "/cmd_vel", 10
+  );
 
-  subscription_ = this->create_subscription<motion_test::msg::MotionCommand>(
+  subscriber_ = this->create_subscription<motion_test::msg::MotionCommand>(
     "motion_command", 10,
     [this](const motion_test::msg::MotionCommand::SharedPtr msg) {
       this->topicCallback(*msg);
@@ -23,30 +23,39 @@ MotionFilter::MotionFilter()
   //   [this]() { this->timerCallback(); }
   // );
 
-  // watchdogTimer_ = this->create_wall_timer(
-  //   100ms,
-  //   [this]() { this->watchdogCallback(); }
-  // );
+  watchdogTimer_ = this->create_wall_timer(
+    100ms,
+    [this]() { this->watchdogCallback(); }
+  );
 
-  // lastCmdTime_ = this->now();
+  lastCmdTime_ = this->now();
 }
 
-// void MotionFilter::stopRobot()
-// {
-//   geometry_msgs::msg::Twist stop;
+void MotionFilter::stopRobot()
+{
+  geometry_msgs::msg::Twist stop;
+  stop.linear.x = 0.0;
+  stop.angular.z = 0.0;
 
-//   stop.linear.x = 0.0;
-//   stop.angular.z = 0.0;
+  publisher_->publish(stop);
 
-//   publisher_->publish(stop);
-//   RCLCPP_INFO(this->get_logger(), "STOP sent on shutdown");
-// }
+  RCLCPP_WARN(this->get_logger(), "WATCHDOG: STOP sent!");
+}
 
 void MotionFilter::topicCallback(const motion_test::msg::MotionCommand & msg)
 {
+  lastCmdTime_ = this->now();
+  stopped_ = false;
+
   RCLCPP_INFO(this->get_logger(),
     "Received: linear_x=%.2f angular_z=%.2f",
     msg.linear_x, msg.angular_z);
+
+  geometry_msgs::msg::Twist cmd;
+  cmd.linear.x = msg.linear_x;
+  cmd.angular.z = msg.angular_z;
+
+  publisher_->publish(cmd);
 }
 
 // void MotionFilter::timerCallback()
@@ -61,9 +70,10 @@ void MotionFilter::topicCallback(const motion_test::msg::MotionCommand & msg)
 //   RCLCPP_INFO(this->get_logger(), "Moving forward...");
 // }
 
-// void MotionFilter::watchdogCallback()
-// {
-//   if ((this->now() - lastCmdTime_).seconds() > 0.5) {
-//     stopRobot();
-//   }
-// }
+void MotionFilter::watchdogCallback()
+{
+  if ((this->now() - lastCmdTime_).seconds() > 0.5 && !stopped_) {
+    stopRobot();
+    stopped_ = true;
+  }
+}
