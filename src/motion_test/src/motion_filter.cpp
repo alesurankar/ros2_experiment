@@ -18,11 +18,6 @@ MotionFilter::MotionFilter()
     }
   );
 
-  // timer_ = this->create_wall_timer(
-  //   500ms,
-  //   [this]() { this->timerCallback(); }
-  // );
-
   watchdogTimer_ = this->create_wall_timer(
     100ms,
     [this]() { this->watchdogCallback(); }
@@ -57,18 +52,6 @@ void MotionFilter::topicCallback(const motion_test::msg::MotionCommand & msg)
 
   publisher_->publish(cmd);
 }
-
-// void MotionFilter::timerCallback()
-// {
-//   geometry_msgs::msg::Twist msg;
-
-//   msg.linear.x = 0.2;
-//   msg.angular.z = 0.01;
-
-//   publisher_->publish(msg);
-//   lastCmdTime_ = this->now();
-//   RCLCPP_INFO(this->get_logger(), "Moving forward...");
-// }
 
 void MotionFilter::watchdogCallback()
 {
