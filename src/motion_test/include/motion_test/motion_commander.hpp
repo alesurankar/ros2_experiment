@@ -9,6 +9,8 @@ public:
   MotionCommander();
 private:
   void timerCallback();
+  void keyboardLoop();
+private:
   rclcpp::Publisher<motion_test::msg::MotionCommand>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
   double linear_x_;
