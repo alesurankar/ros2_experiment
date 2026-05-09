@@ -28,7 +28,6 @@ source ~/ros2_ws/install/setup.bash
 From the workspace root:
 ```bash
 colcon build
-source install/setup.bash
 ```
 
 ---
@@ -76,6 +75,9 @@ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ```
 
 ## Spawn Robot
+
+if not robot in the scene after opening gazebo, then run this:
+
 ```bash
 ros2 run gazebo_ros spawn_entity.py \
   -entity burger \

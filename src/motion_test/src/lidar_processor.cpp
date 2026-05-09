@@ -24,20 +24,29 @@ bool LidarProcessor::hasObstacle() const
   return obstacle_detected_;
 }
 
-void LidarProcessor::scanCallback(const sensor_msgs::msg::LaserScan & msg)
+void LidarProcessor::scanCallback(const sensor_msgs::msg::LaserScan& msg)
 {
-  // middle beam = front direction
-  int center_index = msg.ranges.size() / 2;
+  float angle = 0.0f;
+  int index = (int)((angle - msg.angle_min) / msg.angle_increment);
 
-  float distance = msg.ranges[center_index];
+  int window = 10;
+  float min_distance = std::numeric_limits<float>::infinity();
 
-  // ignore invalid lidar values
-  if (std::isnan(distance) || std::isinf(distance)) {
-    return;
+  for (int i = index - window; i <= index + window; i++) {
+
+    if (i < 0 || i >= (int)msg.ranges.size()) continue;
+
+    float d = msg.ranges[i];
+
+    if (std::isfinite(d) &&
+        d > msg.range_min &&
+        d < msg.range_max)
+    {
+      min_distance = std::min(min_distance, d);
+    }
   }
 
-  front_distance_ = distance;
+  front_distance_ = min_distance;
 
-  // obstacle threshold
-  obstacle_detected_ = front_distance_ < 0.5f;
+  obstacle_detected_ = (front_distance_ < 0.2f);
 }

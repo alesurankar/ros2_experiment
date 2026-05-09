@@ -132,8 +132,8 @@ void MotionCommander::keyboardLoop()
     }
 
     // clamp values
-    linear_x_ = std::clamp(linear_x_, -1.0, 1.0);
-    angular_z_ = std::clamp(angular_z_, -1.0, 1.0);
+    linear_x_ = std::clamp(linear_x_, -0.4, 0.6);
+    angular_z_ = std::clamp(angular_z_, -0.4, 0.6);
     
     // deadzone
     if (std::abs(linear_x_) < 0.1) {

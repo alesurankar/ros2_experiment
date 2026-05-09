@@ -10,7 +10,7 @@ public:
   float frontDistance() const;
   bool hasObstacle() const;
 private:
-  void scanCallback(const sensor_msgs::msg::LaserScan & msg);
+  void scanCallback(const sensor_msgs::msg::LaserScan& msg);
 private:
   rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;
   bool obstacle_detected_ = false;

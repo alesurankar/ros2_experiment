@@ -43,19 +43,22 @@ void MotionFilter::topicCallback(const motion_test::msg::MotionCommand & msg)
   lastCmdTime_ = this->now();
   stopped_ = false;
 
-  RCLCPP_INFO(this->get_logger(),
-    "Received: linear_x=%.2f angular_z=%.2f",
-    msg.linear_x, msg.angular_z);
+  geometry_msgs::msg::Twist cmd;
+  // RCLCPP_INFO(this->get_logger(),
+  //   "Received: linear_x=%.2f angular_z=%.2f",
+  //   msg.linear_x, msg.angular_z);
 
   if (lidar_.hasObstacle() && msg.linear_x > 0.0) {
     RCLCPP_WARN(this->get_logger(), 
       "Obstacle detected! Blocking forward motion.");
-      
-    stopRobot();
+
+    cmd.linear.x = 0.0;
+    cmd.angular.z = msg.angular_z;
+
+    publisher_->publish(cmd);
     return;
   }
 
-  geometry_msgs::msg::Twist cmd;
   cmd.linear.x = msg.linear_x;
   cmd.angular.z = msg.angular_z;
 
