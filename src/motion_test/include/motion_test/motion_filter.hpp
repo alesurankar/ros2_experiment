@@ -8,10 +8,17 @@
 class MotionFilter : public rclcpp::Node
 {
 public:
+  enum class SafetyState
+  {
+    NORMAL,
+    SLOW,
+    STOP
+  };
   MotionFilter();
   void stopRobot();
 private:
   LidarProcessor lidar_;
+  SafetyState last_state_ = SafetyState::NORMAL;
   void topicCallback(const motion_test::msg::MotionCommand& msg);
   void watchdogCallback();
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
