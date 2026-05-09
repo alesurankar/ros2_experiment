@@ -29,7 +29,7 @@ void LidarProcessor::scanCallback(const sensor_msgs::msg::LaserScan& msg)
   float angle = 0.0f;
   int index = (int)((angle - msg.angle_min) / msg.angle_increment);
 
-  int window = 10;
+  int window = 20;
   float min_distance = std::numeric_limits<float>::infinity();
 
   for (int i = index - window; i <= index + window; i++) {

@@ -53,18 +53,38 @@ void MotionFilter::topicCallback(const motion_test::msg::MotionCommand & msg)
   // --- STOP ZONE ---
   if (dist < 0.2f) {
     new_state = SafetyState::STOP;
-    cmd.linear.x = 0.0;
     cmd.angular.z = 0.0;
+
+    // allow ONLY reverse motion
+    if (msg.linear_x < 0.0f) {
+      cmd.linear.x = msg.linear_x;
+    } 
+    else {
+      cmd.linear.x = 0.0f;
+    }
   }
 
   // --- SLOW ZONE ---
-  else if (dist < 0.5f) {
+  else if (dist < 0.6f) {
     new_state = SafetyState::SLOW;
-    float scale = std::clamp((dist - 0.2f) / 0.3f, 0.0f, 1.0f);
-    float max_speed = 0.3f;
 
-    cmd.linear.x = std::clamp(msg.linear_x * scale, -max_speed, max_speed);
-    cmd.angular.z = std::clamp(msg.angular_z * scale, -1.0f, 1.0f);
+    const float d_stop = 0.2f;
+    const float d_slow = 0.6f;
+    float x = (dist - d_stop) / (d_slow - d_stop);
+    x = std::clamp(x, 0.0f, 1.0f);
+    float scale = x * x;
+    const float max_slow_speed = 0.6f;
+
+    if (msg.linear_x > 0.0f) {
+      cmd.linear.x = std::clamp(
+        msg.linear_x * scale,
+        0.0f,
+        max_slow_speed);
+    } 
+    else {
+      cmd.linear.x = msg.linear_x;
+    }
+    cmd.angular.z = msg.angular_z * scale;
   }
 
   // --- NORMAL ZONE ---
