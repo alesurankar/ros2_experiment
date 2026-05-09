@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 if(BUILD_TESTING)
@@ -48,6 +49,7 @@ ament_target_dependencies(motion_commander_node
 add_executable(motion_filter_node
   src/motion_filter_node.cpp
   src/motion_filter.cpp
+  src/lidar_processor.cpp
 )
 
 target_include_directories(motion_filter_node PUBLIC
@@ -57,6 +59,7 @@ target_include_directories(motion_filter_node PUBLIC
 ament_target_dependencies(motion_filter_node
   rclcpp
   geometry_msgs
+  sensor_msgs
 )
 
 target_link_libraries(motion_commander_node
