@@ -5,7 +5,8 @@ using namespace std::chrono_literals;
 
 MotionFilter::MotionFilter()
   : 
-  Node("motion_filter_node")
+  Node("motion_filter_node"),
+  lidar_(*this)
 {
   publisher_ = this->create_publisher<geometry_msgs::msg::Twist>(
     "/cmd_vel", 10
@@ -45,6 +46,14 @@ void MotionFilter::topicCallback(const motion_test::msg::MotionCommand & msg)
   RCLCPP_INFO(this->get_logger(),
     "Received: linear_x=%.2f angular_z=%.2f",
     msg.linear_x, msg.angular_z);
+
+  if (lidar_.hasObstacle() && msg.linear_x > 0.0) {
+    RCLCPP_WARN(this->get_logger(), 
+      "Obstacle detected! Blocking forward motion.");
+      
+    stopRobot();
+    return;
+  }
 
   geometry_msgs::msg::Twist cmd;
   cmd.linear.x = msg.linear_x;

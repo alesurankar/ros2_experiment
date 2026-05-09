@@ -46,22 +46,17 @@ ros2 run <project_name> <node_executable>
 
 ```text
 ros2_ws/
- ├── src/
- │    ├── pubsub_demo/
- │    │    ├── CMakeLists.txt
- │    │    ├── package.xml
- │    │    ├── src/
- │    │    └── include/
- │    │
- │    ├── sensor_playground/
- │    │    ├── CMakeLists.txt
- │    │    ├── package.xml
- │    │    ├── src/
- │    │
- │    ├── motion_test/
- │         ├── CMakeLists.txt
- │         ├── package.xml
- │         ├── src/
+└─ src/
+    └─ motion_test/
+        ├─ include/
+        │   └─ motion_test/
+        │       ├─ lidar_processor.hpp
+        │       ├─ motion_commander.hpp
+        │       └─ motion_filter.hpp
+        ├─ msg/
+        ├─ src/
+        ├─ CMakeLists.txt
+        └─ package.xml
 ```
 
 ---
