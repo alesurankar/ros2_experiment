@@ -1,66 +1,83 @@
-#include "robot_controller/motion_player.hpp"
-#include "robot_controller/motion_loader.hpp"
-#include "robot_controller/motion_engine.hpp"
-
+#include "motion_player/motion_player.hpp"
+#include "motion_player/motion_loader.hpp"
+#include "motion_player/motion_engine.hpp"
 #include <chrono>
 
+
 MotionPlayer::MotionPlayer()
-: 
-Node("motion_player"),
-is_playing_(false)
+  : 
+  Node("motion_player"),
+  is_playing_(false),
+  start_time_(std::chrono::steady_clock::now())
 {
-    pub_ = create_publisher<sensor_msgs::msg::JointState>("/joint_states", 10);
+  pub_ = create_publisher<sensor_msgs::msg::JointState>("/joint_states", 10);
 
-    motion_data_ =
-        MotionLoader::load("/home/alesurankar/ros2_ws/walker_s2_motion.json");
+  motion_data_ =
+    MotionLoader::load("/home/alesurankar/ros2_ws/walker_s2_motion.json");
 
-    timer_ = create_wall_timer(
-        std::chrono::milliseconds(33),
-        std::bind(&MotionPlayer::playback_callback, this));
+  timer_ = create_wall_timer(
+    std::chrono::milliseconds(33),
+    std::bind(&MotionPlayer::playback_callback, this));
 
-    RCLCPP_INFO(get_logger(), "Loaded %zu frames", motion_data_.frames.size());
+  RCLCPP_INFO(get_logger(), "Loaded %zu frames", motion_data_.frames.size());
+}
+
+void MotionPlayer::start_playback()
+{
+  if (motion_data_.frames.empty()) {
+    RCLCPP_ERROR(get_logger(), "No motion loaded");
+    return;
+  }
+
+  is_playing_ = true;
+  start_time_ = std::chrono::steady_clock::now();
 }
 
 void MotionPlayer::playback_callback()
 {
-    if (!is_playing_ || motion_data_.frames.size() < 2)
-        return;
+  if (!is_playing_ || motion_data_.frames.size() < 2) {
+    return;
+  }
 
-    double elapsed =
-        std::chrono::duration<double>(
-            std::chrono::steady_clock::now() - start_time_
-        ).count();
+  double elapsed =
+      std::chrono::duration<double>(
+          std::chrono::steady_clock::now() - start_time_
+      ).count();
 
-    const auto& frames = motion_data_.frames;
+  const auto& frames = motion_data_.frames;
 
-    if (elapsed >= frames.back().timestamp)
-    {
-        publish_joint_state(frames.back());
-        return;
-    }
+  if (elapsed >= frames.back().timestamp)
+  {
+      publish_joint_state(frames.back());
+      return;
+  }
 
-    size_t i = 0;
-    while (i + 1 < frames.size() &&
-           elapsed > frames[i + 1].timestamp)
-        i++;
+  size_t i = 0;
+  while (i + 1 < frames.size() &&
+      elapsed > frames[i + 1].timestamp)
+    i++;
 
-    double dt = frames[i + 1].timestamp - frames[i].timestamp;
-    double t = (elapsed - frames[i].timestamp) / dt;
+  double dt = frames[i + 1].timestamp - frames[i].timestamp;
+  double t = (elapsed - frames[i].timestamp) / dt;
 
-    MotionFrame interp =
-        MotionEngine::interpolate(frames[i], frames[i + 1], t);
+  MotionFrame interp =
+    MotionEngine::interpolate(frames[i], frames[i + 1], t);
 
-    publish_joint_state(interp);
+  publish_joint_state(interp);
 }
 
-int main(int argc, char ** argv)
+void MotionPlayer::publish_joint_state(const MotionFrame& frame)
 {
-    rclcpp::init(argc, argv);
-    auto node = std::make_shared<MotionPlayer>();
+  sensor_msgs::msg::JointState msg;
+  msg.header.stamp = this->get_clock()->now();
 
-    node->start_playback();
-    rclcpp::spin(node);
+  for (const auto& [name, value] : frame.joints) {
+    msg.name.push_back(name);
+    msg.position.push_back(value);
+  }
 
-    rclcpp::shutdown();
-    return 0;
+  msg.velocity.resize(msg.name.size(), 0.0);
+  msg.effort.resize(msg.name.size(), 0.0);
+
+  pub_->publish(msg);
 }

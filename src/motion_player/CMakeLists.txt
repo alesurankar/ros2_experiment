@@ -21,6 +21,7 @@ endif()
 
 # Motion Player
 add_executable(motion_player
+  src/main.cpp
   src/motion_player.cpp
   src/motion_loader.cpp
   src/motion_engine.cpp

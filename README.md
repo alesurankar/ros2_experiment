@@ -32,3 +32,16 @@ Monitor topics
 ```bash
 ros2 topic echo /joint_states
 ```
+
+
+# clear builds
+```bash
+cd ~/ros2_ws
+rm -rf build install log
+```
+
+# generate compile commands
+```bash
+cd ~/ros2_ws
+colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+```
