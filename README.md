@@ -2,17 +2,16 @@
 1. Start RViz2
 ```bash
 cd ~/ros2_ws
-colcon build --packages-select walker_s2_controller
+colcon build
 source install/setup.bash
 ros2 launch walker_s2_description display.launch.py
 ```
 
 2. Start motion player
 ```bash
-cd /home/alesurankar/ros2_ws
-colcon build --packages-select motion_player
+cd ~/ros2_ws
 source install/setup.bash
-ros2 run walker_s2_controller motion_player
+ros2 run robot_controller motion_player
 ```
 
 2. Configure RViz2 (if robot doesn't appear)
@@ -36,9 +35,8 @@ ros2 topic echo /joint_states
 4. Build the controller
 ```bash
 cd ~/ros2_ws
-colcon build --packages-select walker_s2_controller
 source install/setup.bash
-ros2 run walker_s2_controller walker_controller
+ros2 run robot_controller robot_controller
 ```
 
 5. Monitor topics
