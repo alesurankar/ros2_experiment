@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 
 # Testing
 if(BUILD_TESTING)
@@ -31,6 +32,7 @@ ament_target_dependencies(motion_player
   rclcpp
   sensor_msgs
   nlohmann_json
+  ament_index_cpp
 )
 
 target_include_directories(motion_player PUBLIC

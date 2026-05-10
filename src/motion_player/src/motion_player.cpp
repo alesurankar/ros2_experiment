@@ -1,7 +1,9 @@
 #include "motion_player/motion_player.hpp"
 #include "motion_player/motion_loader.hpp"
 #include "motion_player/motion_engine.hpp"
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <chrono>
+#include <functional>
 
 
 MotionPlayer::MotionPlayer()
@@ -12,8 +14,11 @@ MotionPlayer::MotionPlayer()
 {
   pub_ = create_publisher<sensor_msgs::msg::JointState>("/joint_states", 10);
 
-  motion_data_ =
-    MotionLoader::load("/home/alesurankar/ros2_ws/walker_s2_motion.json");
+  std::string path =
+  ament_index_cpp::get_package_share_directory("motion_player")
+  + "/walker_s2_motion.json";
+
+motion_data_ = MotionLoader::load(path);
 
   timer_ = create_wall_timer(
     std::chrono::milliseconds(33),
