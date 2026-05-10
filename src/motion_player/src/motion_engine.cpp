@@ -2,19 +2,22 @@
 
 
 MotionFrame MotionEngine::interpolate(
-    const MotionFrame& f0,
-    const MotionFrame& f1,
-    double t)
+  const MotionFrame& f0,
+  const MotionFrame& f1, 
+  double t)
 {
-    MotionFrame out = f0;
+  MotionFrame out;
+  out.timestamp = f0.timestamp + t * (f1.timestamp - f0.timestamp);
 
-    for (auto& [joint, value] : out.joints)
-    {
-        double v0 = f0.joints.at(joint);
-        double v1 = f1.joints.at(joint);
-
-        out.joints[joint] = v0 + t * (v1 - v0);
+  for (const auto& [joint, v0] : f0.joints) {
+    auto it1 = f1.joints.find(joint);
+    if (it1 == f1.joints.end()) {
+      continue;
     }
 
-    return out;
+    double v1 = it1->second;
+    out.joints[joint] = v0 + t * (v1 - v0);
+  }
+
+  return out;
 }
