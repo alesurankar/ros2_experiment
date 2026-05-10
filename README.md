@@ -1,5 +1,5 @@
 
-1. Start RViz2
+Start RViz2
 ```bash
 cd ~/ros2_ws
 colcon build
@@ -7,20 +7,15 @@ source install/setup.bash
 ros2 launch walker_s2_description display.launch.py
 ```
 
-2. Start motion player
-```bash
-cd ~/ros2_ws
-source install/setup.bash
-ros2 run robot_controller motion_player
-```
 
-2. Configure RViz2 (if robot doesn't appear)
+Configure RViz2 (if robot doesn't appear)
 - Click "Add" button
 - Select "RobotModel" → "OK"
 - Set "Fixed Frame" to base_link
 - Set "Robot Description Topic" to /robot_description
 
-3. Verify Everything Works
+
+Verify Everything Works
 ```bash
 # Check robot description
 ros2 topic echo /robot_description
@@ -32,14 +27,8 @@ ros2 run tf2_tools view_frames
 ros2 topic echo /joint_states
 ```
 
-4. Build the controller
-```bash
-cd ~/ros2_ws
-source install/setup.bash
-ros2 run robot_controller robot_controller
-```
 
-5. Monitor topics
+Monitor topics
 ```bash
 ros2 topic echo /joint_states
 ```

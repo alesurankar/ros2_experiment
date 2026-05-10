@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(robot_controller)
+project(motion_player)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -19,25 +19,36 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-# Robot Controller
-add_executable(robot_controller
-  src/robot_controller.cpp
+# Motion Player
+add_executable(motion_player
+  src/motion_player.cpp
+  src/motion_loader.cpp
+  src/motion_engine.cpp
 )
 
-target_include_directories(robot_controller PUBLIC
+ament_target_dependencies(motion_player
+  rclcpp
+  sensor_msgs
+  nlohmann_json
+)
+
+target_include_directories(motion_player PUBLIC
   include
 )
 
-ament_target_dependencies(
-  robot_controller
-  rclcpp
-  sensor_msgs
+# Install
+install(TARGETS motion_player
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-# Install
-install(TARGETS
-  robot_controller
-  DESTINATION lib/${PROJECT_NAME}
+# Install headers
+install(DIRECTORY include/
+  DESTINATION include
+)
+
+# Install motion data
+install(DIRECTORY data/
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
