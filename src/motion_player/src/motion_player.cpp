@@ -46,61 +46,58 @@ void MotionPlayer::start_playback()
 
 void MotionPlayer::playback_callback()
 {
-  if (!is_playing_ || motion_data_.frames.size() < 2) {
+  if (!is_playing_) {
     return;
   }
 
-  double elapsed = (this->get_clock()->now() - start_time_).seconds();
+  if (motion_data_.frames.size() < 2) {
+    return;
+  }
+
+
+  auto now = this->get_clock()->now();
+
+  double elapsed = (now - start_time_).seconds();
 
   const auto& frames = motion_data_.frames;
 
-  RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 500,
-    "elapsed=%.3f last_index=%zu frame_count=%zu",
-    elapsed, last_index_, frames.size());
+  double final_time = frames.back().timestamp;
 
-  if (elapsed >= frames.back().timestamp) {
+
+  if (elapsed >= final_time) {
     publish_joint_state(frames.back());
 
     is_playing_ = false;
     return;
   }
 
-  // find segment
   while (last_index_ + 1 < frames.size() &&
          elapsed >= frames[last_index_ + 1].timestamp) {
     last_index_++;
-    RCLCPP_INFO(get_logger(), "Advancing index -> %zu (t=%.3f)",
-      last_index_, frames[last_index_].timestamp);
   }
 
   size_t i = last_index_;
 
   if (i + 1 >= frames.size()) {
-    RCLCPP_WARN(get_logger(), "Index at end -> publishing last frame");
     publish_joint_state(frames.back());
     return;
   }
 
-  double dt = frames[i + 1].timestamp - frames[i].timestamp;
+  const auto& f0 = frames[i];
+  const auto& f1 = frames[i + 1];
+  double dt = f1.timestamp - f0.timestamp;
 
   if (dt <= 1e-6) {
-    RCLCPP_WARN(get_logger(),
-      "Zero dt at i=%zu (%.3f -> %.3f)",
-      i, frames[i].timestamp, frames[i + 1].timestamp);
-
-    publish_joint_state(frames[i]);
+    publish_joint_state(f0);
     return;
   }
 
-  double t = (elapsed - frames[i].timestamp) / dt;
-  t = std::clamp(t, 0.0, 1.0);
-
-  RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 500,
-    "segment i=%zu t=%.3f (%.3f -> %.3f)",
-    i, t, frames[i].timestamp, frames[i + 1].timestamp);
+  double raw_t =
+    (elapsed - f0.timestamp) / dt;
+  double t = std::clamp(raw_t, 0.0, 1.0);
 
   MotionFrame interp =
-    MotionEngine::interpolate(frames[i], frames[i + 1], t);
+    MotionEngine::interpolate(f0, f1, t);
 
   publish_joint_state(interp);
 }
@@ -111,7 +108,6 @@ void MotionPlayer::publish_joint_state(const MotionFrame& frame)
   msg.header.stamp = this->get_clock()->now();
 
   msg.name = joint_names_;
-
   msg.position.reserve(joint_names_.size());
   msg.velocity.reserve(joint_names_.size());
 
@@ -137,5 +133,6 @@ void MotionPlayer::publish_joint_state(const MotionFrame& frame)
   has_prev = true;
 
   msg.effort.resize(msg.name.size(), 0.0);
+
   pub_->publish(msg);
 }
