@@ -86,3 +86,4 @@ ros2 run gazebo_ros spawn_entity.py \
   -y -0.5 \
   -z 0.0
 ```
+

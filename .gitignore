@@ -11,3 +11,6 @@ log/
 
 # VS Code
 .vscode/
+
+src/walker_s2_controller/
+src/walker_s2_description/
